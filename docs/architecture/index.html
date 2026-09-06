@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latch Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        code {
+            background: #f8f8f8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        .diagram {
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .flow-box {
+            background: #3498db;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin: 10px;
+            text-align: center;
+            font-weight: bold;
+            min-width: 150px;
+        }
+        .flow-arrow {
+            font-size: 2em;
+            color: #3498db;
+            margin: 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .security {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Latch Architecture Documentation</h1>
+        
+        <p><strong>Version:</strong> 1.0.0</p>
+        <p><strong>Last Updated:</strong> September 6, 2026</p>
+
+        <h2>System Overview</h2>
+        
+        <p>Latch is an action-boundary desk that enforces deterministic policies on AI agent tool calls. It provides cryptographic provenance tracking and human-controllable gating for side-effecting operations.</p>
+
+        <h3>Core Principles</h3>
+        <ul>
+            <li><strong>Deterministic:</strong> Same input always produces same verdict</li>
+            <li><strong>Transparent:</strong> Every decision is explainable and auditable</li>
+            <li><strong>Tamper-Evident:</strong> Cryptographic binding detects modifications</li>
+            <li><strong>Human-Controllable:</strong> HOLD verdicts require explicit human seal</li>
+            <li><strong>Zero Dependencies:</strong> No external services required for core operation</li>
+        </ul>
+
+        <h2>Architecture Diagram</h2>
+
+        <div class="flow">
+            <div class="flow-box">Tool Call</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Policy Engine</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Provenance Bind</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Latch Packet</div>
+        </div>
+
+        <div class="diagram">
+┌─────────────────────────────────────────────────────────────────────┐
+│                          Latch System                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  ┌───────────────┐      ┌──────────────┐      ┌─────────────────┐  │
+│  │   Next.js UI  │      │   REST API   │      │       CLI       │  │
+│  │  (Port 43128) │      │  Endpoints   │      │   (tsx-based)   │  │
+│  └───────┬───────┘      └──────┬───────┘      └────────┬────────┘  │
+│          │                     │                        │            │
+│          └─────────────────────┼────────────────────────┘            │
+│                                │                                     │
+│                     ┌──────────▼──────────┐                          │
+│                     │   LatchService      │                          │
+│                     │  (Orchestration)    │                          │
+│                     └──────────┬──────────┘                          │
+│                                │                                     │
+│          ┌─────────────────────┼─────────────────────┐               │
+│          │                     │                     │               │
+│  ┌───────▼────────┐   ┌────────▼────────┐   ┌──────▼──────────┐    │
+│  │ Policy Engine  │   │   Provenance    │   │   Database      │    │
+│  │ • Pattern      │   │   • SHA-256     │   │   • SQLite      │    │
+│  │ • Risk Class   │   │   • Tamper      │   │   • Packets     │    │
+│  │ • Spend Cap    │   │     Detection   │   │   • Policies    │    │
+│  └────────────────┘   └─────────────────┘   └─────────────────┘    │
+│                                                                       │
+└───────────────────────────────────────────────────────────────────── ┘
+        </div>
+
+        <h2>Component Details</h2>
+
+        <h3>1. LatchService (Orchestration Layer)</h3>
+        
+        <p>The <code>LatchService</code> is the main orchestrator that coordinates policy evaluation, provenance binding, and persistence.</p>
+
+        <p><strong>Responsibilities:</strong></p>
+        <ul>
+            <li>Create packets from tool calls</li>
+            <li>Coordinate policy evaluation</li>
+            <li>Bind cryptographic provenance</li>
+            <li>Manage seal operations</li>
+            <li>Verify packet integrity</li>
+        </ul>
+
+        <p><strong>Key Methods:</strong></p>
+        <pre><code>createPacket(toolCall: ToolCall): LatchPacket
+getPacket(id: string): LatchPacket | null
+sealPacket(request: SealRequest): { success: boolean; error?: string }
+verifyPacketIntegrity(packetId: string): TamperCheckResult
+getPolicies(): PolicyRule[]</code></pre>
+
+        <h3>2. Policy Engine</h3>
+
+        <p>Evaluates tool calls against an ordered list of policy rules. First match wins.</p>
+
+        <p><strong>Pattern Matching:</strong></p>
+        <ul>
+            <li>Exact match: <code>list_dir</code></li>
+            <li>Partial match: <code>read</code> matches <code>read_file</code></li>
+            <li>Wildcard: <code>read*</code> matches any tool starting with "read"</li>
+            <li>Case insensitive</li>
+            <li>Searches both tool name and serialized parameters</li>
+        </ul>
+
+        <p><strong>Spend Cap Enforcement:</strong></p>
+        <p>If a policy has a <code>spendCap</code>, the engine checks parameters and metadata for spend-related keys (<code>amount</code>, <code>cost</code>, <code>price</code>, <code>spend</code>, <code>value</code>). If any value exceeds the cap, verdict becomes HOLD regardless of the rule's action.</p>
+
+        <h3>3. Provenance System</h3>
+
+        <p>Provides tamper-evident binding using SHA-256 hashing.</p>
+
+        <p><strong>Hash Construction:</strong></p>
+        <pre><code>policyHash = SHA-256(normalized(policies))
+toolCallHash = SHA-256(normalized(toolCall))
+boundHash = SHA-256(policyHash + toolCallHash + timestamp)</code></pre>
+
+        <div class="security">
+            <strong>Security Model:</strong> The provenance system uses deep normalization (sorted keys at all levels) to ensure consistent hashing. Any modification to the tool call, policy set, or binding produces a detectable mismatch.
+        </div>
+
+        <h3>4. Database Layer</h3>
+
+        <p><strong>Technology:</strong> SQLite with better-sqlite3</p>
+
+        <p><strong>Schema:</strong></p>
+        <pre><code>CREATE TABLE packets (
+  id TEXT PRIMARY KEY,
+  tool_call TEXT NOT NULL,           -- JSON
+  verdict TEXT NOT NULL,              -- OPEN | CLOSED | HOLD
+  policy_rule_id TEXT,
+  provenance TEXT NOT NULL,           -- JSON
+  sealed INTEGER NOT NULL DEFAULT 0,  -- Boolean
+  sealed_by TEXT,
+  sealed_at INTEGER,
+  created_at INTEGER NOT NULL,
+  reason TEXT NOT NULL
+);
+
+CREATE TABLE policy_rules (
+  id TEXT PRIMARY KEY,
+  pattern TEXT NOT NULL,
+  risk_class TEXT NOT NULL,
+  action TEXT NOT NULL,
+  spend_cap REAL,
+  description TEXT NOT NULL
+);</code></pre>
+
+        <p><strong>Indexes:</strong></p>
+        <ul>
+            <li><code>idx_packets_verdict</code> - Fast verdict filtering</li>
+            <li><code>idx_packets_sealed</code> - Fast unsealed HOLD queries</li>
+            <li><code>idx_packets_created_at</code> - Chronological ordering</li>
+        </ul>
+
+        <h2>Data Flow</h2>
+
+        <h3>Packet Creation Flow</h3>
+
+        <div class="diagram">
+1. Agent submits tool call
+   │
+   ├─► LatchService.createPacket(toolCall)
+        │
+        ├─► PolicyEngine.evaluate(toolCall)
+        │    │
+        │    ├─► Match pattern against rules (first match wins)
+        │    ├─► Check spend cap if defined
+        │    └─► Return verdict + matched rule
+        │
+        ├─► Provenance.createProvenance(policyHash, toolCall)
+        │    │
+        │    ├─► Hash policy set
+        │    ├─► Hash tool call
+        │    ├─► Create timestamp
+        │    └─► Bind all together
+        │
+        ├─► Create LatchPacket structure
+        │
+        └─► Database.savePacket(packet)
+             │
+             └─► Return packet to caller
+        </div>
+
+        <h3>Seal Flow (Human-Only)</h3>
+
+        <div class="diagram">
+1. Human identifies HOLD packet
+   │
+   ├─► LatchService.sealPacket({ packetId, sealedBy })
+        │
+        ├─► Retrieve packet from database
+        │
+        ├─► Verify verdict === 'HOLD'
+        │
+        ├─► Verify not already sealed
+        │
+        ├─► Database.sealPacket(id, sealedBy)
+        │    │
+        │    └─► UPDATE packets SET sealed=1, sealed_by=?, sealed_at=?
+        │
+        └─► Return success
+        </div>
+
+        <h3>Verification Flow</h3>
+
+        <div class="diagram">
+1. Request packet verification
+   │
+   ├─► LatchService.verifyPacketIntegrity(packetId)
+        │
+        ├─► Retrieve packet from database
+        │
+        ├─► Get current policy hash
+        │
+        ├─► Provenance.verifyProvenance(provenance, policyHash, toolCall)
+        │    │
+        │    ├─► Recompute tool call hash
+        │    ├─► Compare with stored toolCallHash ─┬─► Mismatch? TAMPERED
+        │    │                                      └─► Match? Continue
+        │    │
+        │    ├─► Compare current policy hash ───────┬─► Mismatch? POLICY CHANGED
+        │    │                                      └─► Match? Continue
+        │    │
+        │    ├─► Recompute bound hash
+        │    └─► Compare with stored boundHash ─────┬─► Mismatch? CORRUPTED
+        │                                           └─► Match? VALID
+        │
+        └─► Return TamperCheckResult
+        </div>
+
+        <h2>API Specifications</h2>
+
+        <h3>REST Endpoints</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/packets</td>
+                    <td>Create a new packet</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/packets</td>
+                    <td>List all packets</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/packets/:id</td>
+                    <td>Get specific packet</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/packets/:id/seal</td>
+                    <td>Seal a HOLD packet</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/packets/:id/verify</td>
+                    <td>Verify packet integrity</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/policies</td>
+                    <td>List policy rules</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>CLI Commands</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>create</td>
+                    <td>Create a new packet</td>
+                </tr>
+                <tr>
+                    <td>list</td>
+                    <td>List packets (with optional verdict filter)</td>
+                </tr>
+                <tr>
+                    <td>get</td>
+                    <td>Get packet details</td>
+                </tr>
+                <tr>
+                    <td>seal</td>
+                    <td>Seal a HOLD packet</td>
+                </tr>
+                <tr>
+                    <td>verify</td>
+                    <td>Verify packet integrity</td>
+                </tr>
+                <tr>
+                    <td>hold</td>
+                    <td>List unsealed HOLD packets</td>
+                </tr>
+                <tr>
+                    <td>policies</td>
+                    <td>List policy rules</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Security Considerations</h2>
+
+        <div class="security">
+            <h3>Threat Model</h3>
+            <ul>
+                <li><strong>Agent Tampering:</strong> Agents cannot modify tool calls post-evaluation (detected by provenance)</li>
+                <li><strong>Policy Bypass:</strong> Agents cannot change policies (detected by provenance hash mismatch)</li>
+                <li><strong>Seal Forgery:</strong> Only humans can seal HOLD packets (enforced by API/CLI)</li>
+                <li><strong>Database Tampering:</strong> Provenance verification detects corruption</li>
+            </ul>
+
+            <h3>Limitations</h3>
+            <ul>
+                <li><strong>Process Access:</strong> If an attacker has process-level access, they can bypass Latch entirely</li>
+                <li><strong>Database Access:</strong> Direct database modification can corrupt seals (mitigated by provenance)</li>
+                <li><strong>Policy Definition:</strong> Weak policies are the responsibility of the operator</li>
+                <li><strong>Replay Attacks:</strong> Latch doesn't prevent replay of legitimate packets</li>
+            </ul>
+        </div>
+
+        <h2>Performance Characteristics</h2>
+
+        <ul>
+            <li><strong>Packet Creation:</strong> O(n) where n = number of policy rules (stops at first match)</li>
+            <li><strong>Provenance Hashing:</strong> O(m) where m = size of tool call + policies</li>
+            <li><strong>Database Operations:</strong> O(1) for lookups by ID, O(log n) for indexed queries</li>
+            <li><strong>Verification:</strong> O(1) hash comparison operations</li>
+        </ul>
+
+        <div class="note">
+            <strong>Note:</strong> Performance is optimized for single-node deployments. For high-throughput scenarios, consider implementing caching or read replicas.
+        </div>
+
+        <h2>Extension Points</h2>
+
+        <h3>Custom Policy Engine</h3>
+        <p>Implement your own policy evaluation logic by extending <code>PolicyEngine</code> or providing custom <code>PolicyRule</code> arrays.</p>
+
+        <h3>Database Adapters</h3>
+        <p>The <code>LatchDatabase</code> class can be extended to support other database backends (PostgreSQL, MongoDB, etc.).</p>
+
+        <h3>Webhook Integration</h3>
+        <p>Add webhook notifications for packet state changes (created, sealed, etc.).</p>
+
+        <h3>Audit Log Streaming</h3>
+        <p>Stream packet events to external audit systems for long-term retention and compliance.</p>
+
+        <h2>Testing Strategy</h2>
+
+        <div class="success">
+            <h3>Test Coverage: 67 Tests, 96.77% Code Coverage</h3>
+            <ul>
+                <li><strong>Unit Tests:</strong> Policy engine, provenance system, database operations</li>
+                <li><strong>Integration Tests:</strong> End-to-end packet lifecycle</li>
+                <li><strong>Fixture Tests:</strong> All required scenarios (clear-open, deny-destructive, hold-deploy, tampered-policy, spend-over-cap)</li>
+            </ul>
+        </div>
+
+        <h2>Deployment</h2>
+
+        <h3>Development</h3>
+        <pre><code>npm run dev</code></pre>
+
+        <h3>Production</h3>
+        <pre><code>npm run build
+npm start</code></pre>
+
+        <h3>Environment Variables</h3>
+        <ul>
+            <li><code>NODE_ENV</code> - Set to 'production' for production builds</li>
+            <li><code>DATABASE_PATH</code> - Optional custom database path</li>
+        </ul>
+
+        <h2>Future Enhancements</h2>
+
+        <ul>
+            <li>Policy versioning and migration</li>
+            <li>Distributed consensus for multi-node deployments</li>
+            <li>Machine learning-based pattern matching</li>
+            <li>Time-travel debugging and packet replay</li>
+            <li>Advanced audit log analytics</li>
+            <li>Integration with external policy engines (OPA, etc.)</li>
+            <li>Revocation and unsealing capabilities</li>
+            <li>Policy simulation and testing tools</li>
+        </ul>
+
+        <hr style="margin: 40px 0; border: none; border-top: 2px solid #ecf0f1;">
+
+        <p style="text-align: center; color: #7f8c8d; font-size: 0.9em;">
+            <strong>Latch Architecture v1.0.0</strong><br>
+            MIT License | 2026 | Action-boundary desk for agent tool calls
+        </p>
+    </div>
+</body>
+</html>

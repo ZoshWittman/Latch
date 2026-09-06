@@ -1,0 +1,38 @@
+{
+  "name": "latch",
+  "version": "1.0.0",
+  "description": "Action-boundary desk for agent tool calls",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev -p 43128",
+    "build": "next build",
+    "start": "next start -p 43128",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "next lint",
+    "cli": "tsx src/cli/index.ts"
+  },
+  "keywords": ["latch", "agent", "policy", "provenance"],
+  "author": "ZoshWittman",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "better-sqlite3": "^11.7.0",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2",
+    "tsx": "^4.19.2",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.0"
+  }
+}
